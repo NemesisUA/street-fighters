@@ -1,7 +1,8 @@
 import createElement from '../helpers/domHelper';
 
 export function createFighterPreview(fighter, position) {
-    const positionClassName = position === 'right' ? 'fighter-preview___right' : 'fighter-preview___left';
+    const positionClassName =
+        position === 'right' ? 'fighter-preview___right arena___right-fighter' : 'fighter-preview___left';
     const fighterElement = createElement({
         tagName: 'div',
         className: `fighter-preview___root ${positionClassName}`
@@ -12,49 +13,46 @@ export function createFighterPreview(fighter, position) {
     function createFighterPreviewStats(fighter1) {
         const statsDivElement = createElement({
             tagName: 'div',
-            className: 'preview-container___versus-stats'
+            className: 'fighter-preview___stats'
         });
 
         statsDivElement.insertAdjacentHTML(
             'afterbegin',
-            `<p>health: <span>${fighter1.health}</span></p>
-            <p>attack: <span>${fighter1.attack}</span></p>
-            <p>defense: <span>${fighter1.defense}</span></p>`
+            `<p>health: <span>${fighter1?.health}</span></p>
+            <p>attack: <span>${fighter1?.attack}</span></p>
+            <p>defense: <span>${fighter1?.defense}</span></p>`
         );
         return statsDivElement;
     }
 
-    function createFighterPreviewImage(fighter1) {
+    function createFighterPreviewImage(fighter1 = {}) {
         const { source, name } = fighter1;
         const attributes = {
             src: source,
             title: name,
-            alt: name,
-            hight: '300px'
+            alt: name
         };
         const imgElement = createElement({
             tagName: 'img',
-            className: `review-container___versus-img`,
+            className: `fighter-preview___img ${positionClassName}`,
             attributes
         });
 
         return imgElement;
     }
 
-    function createFighterPreviewName() {
+    function createFighterPreviewName(fighter1) {
         const nameElement = createElement({
             tagName: 'p',
             className: 'arena___fighter-name'
         });
+        nameElement.innerHTML = fighter1?.name;
 
         return nameElement;
     }
 
-    const nameElement = createFighterPreviewName();
-    nameElement.innerHTML = fighter.name;
-
+    const nameElement = createFighterPreviewName(fighter);
     const statsElement = createFighterPreviewStats(fighter);
-
     const imageElement = createFighterPreviewImage(fighter, position);
 
     fighterElement.append(nameElement);

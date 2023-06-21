@@ -11,3 +11,18 @@
 .fighter-preview___left {
   align-items: flex-start;
 }
+
+.fighter-preview___stats {
+  color: white;
+  font-size: 20px;
+  text-shadow: 0 0 2px black;
+}
+
+.fighter-preview___stats span {
+  color: red;
+  text-shadow: 0 0 2px black;
+}
+
+.fighter-preview___img {
+  height: 400px;
+}
