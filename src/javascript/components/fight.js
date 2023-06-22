@@ -60,52 +60,6 @@ export async function fight(firstFighter, secondFighter) {
             return `${result}%`;
         }
 
-        function handleAttackOfFirst(e) {
-            if (e.code === controls.PlayerOneAttack && firstPlayer.canAttack) {
-                const damage = getDamage(firstPlayer, secondPlayer);
-
-                secondPlayer.currLife -= damage;
-                if (secondPlayer.currLife <= 0) {
-                    secondPlayer.currLife = 0;
-                }
-
-                const damagePercentOfCurrLife = (damage / +secondPlayer.currLife) * 100;
-                secondHealthBar.style.background = `linear-gradient(to right, #ebd759 ${100 - damagePercentOfCurrLife}%,
-                    red ${100 - damagePercentOfCurrLife}%)`;
-                setTimeout(() => {
-                    secondHealthBar.style.width = setHealthBar(secondPlayer);
-                    secondHealthBar.style.background = `linear-gradient(to right, #ebd759, #ebd759)`;
-                }, 500);
-
-                if (secondPlayer.currLife <= 0) {
-                    resolve(firstFighter);
-                }
-            }
-        }
-
-        function handleAttackOfSecond(e) {
-            if (e.code === controls.PlayerTwoAttack && secondPlayer.canAttack) {
-                const damage = getDamage(secondPlayer, firstPlayer);
-
-                firstPlayer.currLife -= damage;
-                if (firstPlayer.currLife <= 0) {
-                    firstPlayer.currLife = 0;
-                }
-
-                const damagePercentOfCurrLife = (damage / +firstPlayer.currLife) * 100;
-                firstHealthBar.style.background = `linear-gradient(to right, #ebd759 ${100 - damagePercentOfCurrLife}%,
-                     red ${100 - damagePercentOfCurrLife}%)`;
-                setTimeout(() => {
-                    firstHealthBar.style.width = setHealthBar(firstPlayer);
-                    firstHealthBar.style.background = `linear-gradient(to right, #ebd759, #ebd759)`;
-                }, 500);
-
-                if (firstPlayer.currLife <= 0) {
-                    resolve(secondFighter);
-                }
-            }
-        }
-
         function handleBlockOfFirst(e) {
             if (e.code === controls.PlayerOneBlock) {
                 firstPlayer.isBlocking = true;
@@ -135,6 +89,59 @@ export async function fight(firstFighter, secondFighter) {
                 secondPlayer.isBlocking = false;
                 secondPlayer.canAttack = true;
                 secondDiv.style.boxShadow = 'none';
+            }
+        }
+
+        function handleAttackOfFirst(e) {
+            if (e.code === controls.PlayerOneAttack && firstPlayer.canAttack) {
+                const damage = getDamage(firstPlayer, secondPlayer);
+
+                secondPlayer.currLife -= damage;
+                if (secondPlayer.currLife <= 0) {
+                    secondPlayer.currLife = 0;
+                }
+
+                const damagePercentOfCurrLife = (damage / (+secondPlayer.currLife + damage)) * 100;
+                secondHealthBar.style.background = `linear-gradient(to right, #ebd759 ${100 - damagePercentOfCurrLife}%,
+                    red ${100 - damagePercentOfCurrLife}%)`;
+                setTimeout(() => {
+                    secondHealthBar.style.width = setHealthBar(secondPlayer);
+                    secondHealthBar.style.background = `linear-gradient(to right, #ebd759, #ebd759)`;
+                }, 200);
+
+                if (secondPlayer.currLife <= 0) {
+                    window.removeEventListener('keydown', handleAttackOfFirst);
+                    window.removeEventListener('keydown', handleBlockOfFirst);
+                    window.removeEventListener('keydown', handleBlockOfSecond);
+                    resolve(firstFighter);
+                }
+            }
+        }
+
+        function handleAttackOfSecond(e) {
+            if (e.code === controls.PlayerTwoAttack && secondPlayer.canAttack) {
+                const damage = getDamage(secondPlayer, firstPlayer);
+
+                firstPlayer.currLife -= damage;
+                if (firstPlayer.currLife <= 0) {
+                    firstPlayer.currLife = 0;
+                }
+
+                const damagePercentOfCurrLife = (damage / (+firstPlayer.currLife + damage)) * 100;
+                firstHealthBar.style.background = `linear-gradient(to right, #ebd759 ${100 - damagePercentOfCurrLife}%,
+                     red ${100 - damagePercentOfCurrLife}%)`;
+                setTimeout(() => {
+                    firstHealthBar.style.width = setHealthBar(firstPlayer);
+                    firstHealthBar.style.background = `linear-gradient(to right, #ebd759, #ebd759)`;
+                }, 500);
+
+                if (firstPlayer.currLife <= 0) {
+                    window.removeEventListener('keydown', handleAttackOfFirst);
+                    window.removeEventListener('keydown', handleAttackOfSecond);
+                    window.removeEventListener('keydown', handleBlockOfFirst);
+                    window.removeEventListener('keydown', handleBlockOfSecond);
+                    resolve(secondFighter);
+                }
             }
         }
 
